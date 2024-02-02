@@ -1,0 +1,98 @@
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
+import * as apiClient from "../utils/api-clients";
+import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
+
+export type SignInFormData = {
+  email: string;
+  password: string;
+};
+
+const SignIn = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormData>();
+
+  const queryClient = useQueryClient();
+
+  const navigate = useNavigate();
+
+  const successToast = () =>
+    toast.success("Account created successfully", { position: "top-right" });
+  const errorToast = () => toast.error("Error creating account");
+
+  const mutation = useMutation(apiClient.signIn, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("validateToken");
+      successToast();
+      navigate("/");
+    },
+    onError: () => {
+      errorToast();
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+    mutation.mutate(data);
+  });
+
+  return (
+    <form className="flex flex-col gap-5" onSubmit={onSubmit}>
+      <h2 className="text-3xl font-bold">Sign In</h2>
+
+      <label className="text-gray-700 text-sm font-bold">
+        Email
+        <input
+          type="email"
+          className="border rounded w-full py-1 px-2 font-normal"
+          {...register("email", { required: "This field is requried" })}
+        />
+        {errors.email && (
+          <span className="text-red-500 text-sm">{errors.email.message}</span>
+        )}
+      </label>
+
+      <label className="text-gray-700 text-sm font-bold">
+        Password
+        <input
+          type="password"
+          className="border rounded w-full py-1 px-2 font-normal"
+          {...register("password", {
+            required: "This field is requried",
+            minLength: {
+              value: 6,
+              message: "Password must be at least 6 characters long",
+            },
+          })}
+        />
+        {errors.password && (
+          <span className="text-red-500 text-sm">
+            {errors.password.message}
+          </span>
+        )}
+      </label>
+      <span className="flex items-center justify-between">
+      <button
+        type="submit"
+        className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500"
+      >
+        Log In
+      </button>
+
+      <p>
+        Don't have an account?{" "}
+        <Link to="/register" className="text-blue-600 font-bold">
+          Register
+        </Link>
+      </p>
+      </span>
+      
+    </form>
+  );
+};
+
+export default SignIn;
