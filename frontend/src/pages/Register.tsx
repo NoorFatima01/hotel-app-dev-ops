@@ -29,7 +29,7 @@ const Register = () => {
 
 
 const successToast = () => toast.success('Account created successfully', { position: 'top-right' });
-    const errorToast = () => toast.error('Error creating account');
+    const errorToast = () => toast.error('Error creating account',{position: 'top-right'});
 
   const mutation = useMutation(apiClient.register,{
     onSuccess: async ()=>{

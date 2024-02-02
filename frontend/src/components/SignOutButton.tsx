@@ -8,7 +8,7 @@ const SignOutButton = () => {
   const navigate = useNavigate();
   const successToast = () =>
     toast.success("Signed out successfully", { position: "top-right" });
-  const errorToast = () => toast.error("Error signing out");
+  const errorToast = () => toast.error("Error signing out", { position: "top-right" });
 
   const mutation = useMutation(apiClient.signOut, {
     onSuccess: async () => {

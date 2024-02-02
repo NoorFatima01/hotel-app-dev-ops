@@ -21,8 +21,8 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const successToast = () =>
-    toast.success("Account created successfully", { position: "top-right" });
-  const errorToast = () => toast.error("Error creating account");
+    toast.success("Sign in successfull", { position: "top-right" });
+  const errorToast = () => toast.error("Error with sign in", { position: "top-right" });
 
   const mutation = useMutation(apiClient.signIn, {
     onSuccess: async () => {
