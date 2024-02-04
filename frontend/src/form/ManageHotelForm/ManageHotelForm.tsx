@@ -31,6 +31,7 @@ const ManageHotelForm = ({ onSave, isLoading }: ManageHotelFormProps) => {
 
   const onSubmit = handleSubmit((data: HotelFormData) => {
     //We are going to send the data to the server, but first we need to convert the data to FormData can not send it as a JSON object
+    console.log(data);
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("city", data.city);
@@ -41,12 +42,13 @@ const ManageHotelForm = ({ onSave, isLoading }: ManageHotelFormProps) => {
     formData.append("starRating", data.starRating.toString());
     formData.append("adultCapacity", data.adultCapacity.toString());
     formData.append("childCapacity", data.childCapacity.toString());
-    data.facilities.forEach((facility, index) => {
-      formData.append(`facilities[${index}]`, facility);
-    });
+    for (let i = 0; i < data.facilities.length; i++) {
+      formData.append("facilities", data.facilities[i]);
+    }
     Array.from(data.imageFiles).forEach((imageFile) => {
       formData.append("imageFiles", imageFile);
     });
+    console.log(...formData);
     onSave(formData);
   });
 

@@ -1,6 +1,6 @@
 import { RegisterFormData } from "../pages/Register";
 import { SignInFormData } from "../pages/SignIn";
-
+import { HotelType } from "../../../backend/src/models/hotel";
 const BASE_URL = "http://localhost:7000";
 
 export const register = async (formData: RegisterFormData) => {
@@ -59,19 +59,32 @@ export const signOut = async () => {
 };
 
 export const addMyHotel = async (formData: FormData) => {
-    const response = await fetch(`${BASE_URL}/api/my-hotels`, {
-        method: "POST",
-        credentials: "include", //to send the cookie
-        body: formData,
-        headers: {
-            // Do not set Content-Type here, it will be automatically set to FormData
-         },
-        
-    });
-    const resBody = await response.json();
+  const response = await fetch(`${BASE_URL}/api/my-hotels`, {
+    method: "POST",
+    credentials: "include", //to send the cookie
+    body: formData,
+    headers: {
+      // Do not set Content-Type here, it will be automatically set to FormData
+    },
+  });
+  const resBody = await response.json();
 
-    if (!response.ok) {
-        throw new Error(resBody.message);
-    }
-    return resBody;
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
+};
+
+export const getMyHotels = async (): Promise<HotelType[]> => {
+  //we dont really need to separately send a userId as the token will be sent in the headers and the api can get the user id from the cookie
+  const response = await fetch(`${BASE_URL}/api/my-hotels`, {
+    method: "GET",
+    credentials: "include", //to send the cookie along with the request
+  });
+  const resBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
 };

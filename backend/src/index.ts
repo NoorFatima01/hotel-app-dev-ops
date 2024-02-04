@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { Request, Response } from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
 import userRoutes from "./routes/users";
@@ -37,6 +38,10 @@ app.use(express.urlencoded({ extended: true })); //helps parse the url to get th
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", hotelRoutes);
+
+app.get("*", (req:Request, res:Response) => {
+  res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"));
+}); 
 
 app.listen(7000, () => {
   console.log("Server started at port 7000");
