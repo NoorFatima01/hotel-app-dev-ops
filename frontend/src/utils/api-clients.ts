@@ -88,3 +88,33 @@ export const getMyHotels = async (): Promise<HotelType[]> => {
   }
   return resBody;
 };
+
+export const getMyHotelById = async (hotedId: string): Promise<HotelType> => {
+  const response = await fetch(`${BASE_URL}/api/my-hotels/${hotedId}`, {
+    method: "GET",
+    credentials: "include", //to send the cookie along with the request
+  });
+  const resBody = await response.json();
+
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
+};
+
+export const updateMyHotelById = async (hotelFormData: FormData) => {
+  const response = await fetch(
+    `${BASE_URL}/api/my-hotels//${hotelFormData.get("_id")}`,
+    {
+      method: "PUT",
+      credentials: "include",
+      body: hotelFormData,
+    }
+  );
+
+  const resBody = await response.json();
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
+};

@@ -4,6 +4,8 @@ import TypeSection from "./TypeSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestsSection from "./GuestsSection";
 import ImageSection from "./ImageSection";
+import { HotelType } from "../../../../backend/src/models/hotel";
+import { useEffect } from "react";
 export type HotelFormData = {
   name: string;
   city: string;
@@ -14,6 +16,7 @@ export type HotelFormData = {
   starRating: number;
   facilities: string[];
   imageFiles: FileList;
+  imageUrls: string[];
   adultCapacity: number;
   childCapacity: number;
 };
@@ -21,18 +24,29 @@ export type HotelFormData = {
 type ManageHotelFormProps = {
   onSave: (hotelFormData: FormData) => void;
   isLoading: boolean;
+  hotelData?: HotelType;
 };
 
-const ManageHotelForm = ({ onSave, isLoading }: ManageHotelFormProps) => {
+const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) => {
   const formMethods = useForm<HotelFormData>();
   //we are not gonna destruct the formMethods object here
 
-  const { handleSubmit } = formMethods;
+  const { handleSubmit,reset } = formMethods;
+
+  useEffect (()=>{
+    if(hotelData){
+      reset(hotelData)
+    }
+  },[hotelData,reset])
 
   const onSubmit = handleSubmit((data: HotelFormData) => {
     //We are going to send the data to the server, but first we need to convert the data to FormData can not send it as a JSON object
     console.log(data);
     const formData = new FormData();
+    if(hotelData){
+      console.log(hotelData._id, "hotelData._id")
+      formData.append("_id", hotelData._id);
+    }
     formData.append("name", data.name);
     formData.append("city", data.city);
     formData.append("country", data.country);
@@ -45,6 +59,15 @@ const ManageHotelForm = ({ onSave, isLoading }: ManageHotelFormProps) => {
     for (let i = 0; i < data.facilities.length; i++) {
       formData.append("facilities", data.facilities[i]);
     }
+
+    //if form is in edit mode, then save the existing image urls in the form data so that they can also be saved in the backend
+    if(data.imageUrls){
+      console.log(data.imageUrls[0])
+      for (let i = 0; i < data.imageUrls.length; i++) {
+        formData.append("imageUrls", data.imageUrls[i]);
+      }
+    }
+
     Array.from(data.imageFiles).forEach((imageFile) => {
       formData.append("imageFiles", imageFile);
     });
