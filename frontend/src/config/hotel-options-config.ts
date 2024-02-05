@@ -2,7 +2,6 @@ export const hotelTypes = [
     { value: "hotel", label: "Hotel" },
     { value: "motel", label: "Motel" },
     { value: "resort", label: "Resort" },
-    { value: "guesthouse", label: "Guest House" },
     { value: "apartment", label: "Apartment" },
     { value: "hostel", label: "Hostel" },
     { value: "villa", label: "Villa" },
@@ -18,7 +17,6 @@ export const hotelTypes = [
     { value: "farmstay", label: "Farmstay" },
     { value: "townhouse", label: "Townhouse" },
     { value: "holiday home", label: "Holiday Home" },
-    { value: "aparthotel", label: "Aparthotel" },
     { value: "pension", label: "Pension" },
     { value: "ryokan", label: "Ryokan" },
     { value: "riyad", label: "Riyad" },
@@ -26,7 +24,6 @@ export const hotelTypes = [
     { value: "boutique hotel", label: "Boutique Hotel" },
     { value: "apartment hotel", label: "Apartment Hotel" },
     { value: "guesthouse", label: "Guest House" },
-    { value: "apartment", label: "Apartment" },
 ]
 
 export const hotelFacilities = [
