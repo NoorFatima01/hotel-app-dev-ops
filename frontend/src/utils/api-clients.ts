@@ -127,17 +127,31 @@ export type SearchParams = {
   adults?: string;
   children?: string;
   page?: string;
+  facilities?: string[];
+  types?: string[];
+  stars?: string[];
+  maxPrice?: string;
+  sortOptions?: string;
 };
 
 export const searchHotels = async (params: SearchParams):Promise<HotelSearchResponse> => {
   const queryParams = new URLSearchParams();
 
+  //for searching
   queryParams.append("destination", params.destination || "");
   queryParams.append("checkIn", params.checkIn || "");
   queryParams.append("checkOut", params.checkOut || "");
   queryParams.append("adults", params.adults || "");
   queryParams.append("children", params.children || "");
   queryParams.append("page", params.page || "");
+
+  //for filtering
+  queryParams.append("facilities", (params.facilities || []).join(","));
+  queryParams.append("types", (params.types || []).join(","));
+  queryParams.append("stars", (params.stars || []).join(","));
+  queryParams.append("maxPrice", params.maxPrice || "");
+  queryParams.append("sortOptions", params.sortOptions || "");
+
 
   const response = await fetch(`${BASE_URL}/api/hotels/search?${queryParams}`, {
     method: "GET",
