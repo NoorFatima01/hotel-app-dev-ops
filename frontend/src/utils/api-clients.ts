@@ -124,8 +124,8 @@ export type SearchParams = {
   destination?: string;
   checkIn?: string;
   checkOut?: string;
-  adults?: string;
-  children?: string;
+  adultCapacity?: string;
+  childrenCapacity?: string;
   page?: string;
   facilities?: string[];
   types?: string[];
@@ -134,24 +134,28 @@ export type SearchParams = {
   sortOptions?: string;
 };
 
-export const searchHotels = async (params: SearchParams):Promise<HotelSearchResponse> => {
+export const searchHotels = async (
+  params: SearchParams
+): Promise<HotelSearchResponse> => {
   const queryParams = new URLSearchParams();
 
   //for searching
   queryParams.append("destination", params.destination || "");
   queryParams.append("checkIn", params.checkIn || "");
   queryParams.append("checkOut", params.checkOut || "");
-  queryParams.append("adults", params.adults || "");
-  queryParams.append("children", params.children || "");
+  queryParams.append("adultCapacity", params.adultCapacity || "");
+  queryParams.append("childrenCapacity", params.childrenCapacity || "");
   queryParams.append("page", params.page || "");
 
   //for filtering
-  queryParams.append("facilities", (params.facilities || []).join(","));
-  queryParams.append("types", (params.types || []).join(","));
-  queryParams.append("stars", (params.stars || []).join(","));
+  params.facilities?.forEach((facility) =>
+    queryParams.append("facilities", facility)
+  );
+
+  params.types?.forEach((type) => queryParams.append("types", type));
+  params.stars?.forEach((star) => queryParams.append("stars", star));
   queryParams.append("maxPrice", params.maxPrice || "");
   queryParams.append("sortOptions", params.sortOptions || "");
-
 
   const response = await fetch(`${BASE_URL}/api/hotels/search?${queryParams}`, {
     method: "GET",

@@ -18,8 +18,8 @@ const Search = () => {
     destination: search.destination,
     checkIn: search.checkIn.toISOString(),
     checkOut: search.checkOut.toISOString(),
-    adults: search.adults.toString(),
-    children: search.child.toString(),
+    adultCapacity: search.adults.toString(),
+    childrenCapacity: search.child.toString(),
     page: page.toString(),
     stars: selectedStars
   };

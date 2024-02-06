@@ -9,7 +9,9 @@ const router = express.Router();
 //api/hotels/search?
 router.get("/search", async (req: Request, res: Response) => {
   try {
+    console.log(req.query, "query params");
     const searchQuery = constructSearchQuery(req.query);
+    console.log(searchQuery, "search query");
 
     let sortOptions = {};
 
@@ -70,15 +72,15 @@ const constructSearchQuery = (queryParams: any) => {
     ];
   }
 
-  if (queryParams.adultCount) {
-    constructedQuery.adultCount = {
-      $gte: parseInt(queryParams.adultCount),
+  if (queryParams.adultCapacity) {
+    constructedQuery.adultCapacity = {
+      $gte: parseInt(queryParams.adultCapacity),
     };
   }
 
-  if (queryParams.childCount) {
-    constructedQuery.childCount = {
-      $gte: parseInt(queryParams.childCount),
+  if (queryParams.childCapacity) {
+    constructedQuery.childCapacity = {
+      $gte: parseInt(queryParams.childCapacity),
     };
   }
 
@@ -101,7 +103,9 @@ const constructSearchQuery = (queryParams: any) => {
   if (queryParams.stars) {
     const starRatings = Array.isArray(queryParams.stars)
       ? queryParams.stars.map((star: string) => parseInt(star))
-      : parseInt(queryParams.stars);
+      : [parseInt(queryParams.stars)];
+
+      console.log("starRatings", starRatings)
 
     constructedQuery.starRating = { $in: starRatings };
   }
