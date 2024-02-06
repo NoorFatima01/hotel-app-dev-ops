@@ -1,6 +1,7 @@
 import { RegisterFormData } from "../pages/Register";
 import { SignInFormData } from "../pages/SignIn";
 import { HotelType } from "../../../backend/src/models/hotel";
+import { HotelSearchResponse } from "../../../backend/src/models/search";
 const BASE_URL = "http://localhost:7000";
 
 export const register = async (formData: RegisterFormData) => {
@@ -111,6 +112,37 @@ export const updateMyHotelById = async (hotelFormData: FormData) => {
       body: hotelFormData,
     }
   );
+
+  const resBody = await response.json();
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
+};
+
+export type SearchParams = {
+  destination?: string;
+  checkIn?: string;
+  checkOut?: string;
+  adults?: string;
+  children?: string;
+  page?: string;
+};
+
+export const searchHotels = async (params: SearchParams):Promise<HotelSearchResponse> => {
+  const queryParams = new URLSearchParams();
+
+  queryParams.append("destination", params.destination || "");
+  queryParams.append("checkIn", params.checkIn || "");
+  queryParams.append("checkOut", params.checkOut || "");
+  queryParams.append("adults", params.adults || "");
+  queryParams.append("children", params.children || "");
+  queryParams.append("page", params.page || "");
+
+  const response = await fetch(`${BASE_URL}/api/hotels/search?${queryParams}`, {
+    method: "GET",
+    credentials: "include", //to send the cookie along with the request
+  });
 
   const resBody = await response.json();
   if (!response.ok) {

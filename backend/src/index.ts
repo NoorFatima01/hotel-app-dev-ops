@@ -8,7 +8,8 @@ import authRoutes from "./routes/auth";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { S3Client } from "@aws-sdk/client-s3";
-import hotelRoutes from "./routes/my-hotels";
+import myHotelRoutes from "./routes/my-hotels";
+import hotelRoutes from "./routes/hotels";
 
 mongoose.connect(process.env.MONGODB_URI as string);
 
@@ -37,7 +38,8 @@ app.use(express.urlencoded({ extended: true })); //helps parse the url to get th
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/my-hotels", hotelRoutes);
+app.use("/api/my-hotels", myHotelRoutes);
+app.use("/api/hotels",hotelRoutes)
 
 app.get("*", (req:Request, res:Response) => {
   res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"));

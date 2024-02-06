@@ -1,25 +1,28 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { AppContextProvider } from './context/AppContext.tsx'
-import { ToastContainer } from 'react-toastify'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { AppContextProvider } from "./context/AppContext.tsx";
+import { ToastContainer } from "react-toastify";
+import { SearchProvider } from "./context/SearchContext.tsx";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-     retry:0,
+      retry: 0,
     },
   },
-})
+});
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AppContextProvider>
-        <ToastContainer />
-        <App />
+        <SearchProvider>
+          <ToastContainer />
+          <App />
+        </SearchProvider>
       </AppContextProvider>
     </QueryClientProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
