@@ -159,7 +159,6 @@ export const searchHotels = async (
 
   const response = await fetch(`${BASE_URL}/api/hotels/search?${queryParams}`, {
     method: "GET",
-    credentials: "include", //to send the cookie along with the request
   });
 
   const resBody = await response.json();
@@ -168,3 +167,15 @@ export const searchHotels = async (
   }
   return resBody;
 };
+
+export const fetchHotelById = async (hotelId: string):Promise<HotelType> => {
+  const response = await fetch(`${BASE_URL}/api/hotels/${hotelId}`, {
+    method: "GET",
+  });
+
+  const resBody = await response.json();
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
+}
