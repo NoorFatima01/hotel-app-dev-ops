@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
+import verifyToken from "../middleware/auth";
 const router = express.Router();
 
 // url: /api/users/register
@@ -51,5 +52,22 @@ router.post("/register", [
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
-export default router;
 
+
+router.get("/me",verifyToken, async (req:Request,res:Response)=>{
+  const userId = req.userId;
+  console.log(userId,"userId");
+  try{
+    const user = await User.findById(userId);
+    if(!user){
+      return res.status(404).json({message:"User not found"});
+    }
+    console.log(user,"user");
+    return res.status(200).json(user);
+  }catch(err){
+    console.log(err);
+    return res.status(500).json({message:"Internal Server Error"});
+  }
+})
+
+export default router;

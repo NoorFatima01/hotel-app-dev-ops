@@ -2,6 +2,7 @@ import { RegisterFormData } from "../pages/Register";
 import { SignInFormData } from "../pages/SignIn";
 import { HotelType } from "../../../backend/src/models/hotel";
 import { HotelSearchResponse } from "../../../backend/src/models/search";
+import { UserType } from "../../../backend/src/models/user";
 const BASE_URL = "http://localhost:7000";
 
 export const register = async (formData: RegisterFormData) => {
@@ -57,6 +58,18 @@ export const signOut = async () => {
   if (!response.ok) {
     throw new Error("Logout failed");
   }
+};
+
+export const fetchCurrentUser = async ():Promise<UserType> => {
+  const response = await fetch(`${BASE_URL}/api/users/me`, {
+    method: "GET",
+    credentials: "include", //to send the cookie along with the request
+  });
+  const resBody = await response.json();
+  if (!response.ok) {
+    throw new Error(resBody.message);
+  }
+  return resBody;
 };
 
 export const addMyHotel = async (formData: FormData) => {
@@ -168,7 +181,7 @@ export const searchHotels = async (
   return resBody;
 };
 
-export const fetchHotelById = async (hotelId: string):Promise<HotelType> => {
+export const fetchHotelById = async (hotelId: string): Promise<HotelType> => {
   const response = await fetch(`${BASE_URL}/api/hotels/${hotelId}`, {
     method: "GET",
   });
@@ -178,4 +191,4 @@ export const fetchHotelById = async (hotelId: string):Promise<HotelType> => {
     throw new Error(resBody.message);
   }
   return resBody;
-}
+};
