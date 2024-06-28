@@ -1,4 +1,3 @@
-import React from "react";
 import { UserType } from "../../../../backend/src/models/user";
 import { useForm } from "react-hook-form";
 
@@ -7,13 +6,13 @@ type BookingFormProps = {
 };
 
 type BookingFormData = {
-  firstName: string;
+  firstName: string; 
   lastName: string;
   email: string;
 };
 
 const BookingForm = ({ currentUser }: BookingFormProps) => {
-  const { register,handleSubmit } = useForm<BookingFormData>({defaultValues: {
+  const { register } = useForm<BookingFormData>({defaultValues: {
     firstName: currentUser.firstName,
     lastName: currentUser.lastName,
     email: currentUser.email,

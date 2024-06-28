@@ -3,7 +3,7 @@ import { SignInFormData } from "../pages/SignIn";
 import { HotelType } from "../../../backend/src/models/hotel";
 import { HotelSearchResponse } from "../../../backend/src/models/search";
 import { UserType } from "../../../backend/src/models/user";
-const BASE_URL = "http://localhost:7000";
+const BASE_URL = process.env.REACT_APP_BACKEND_URL as string || "";
 
 export const register = async (formData: RegisterFormData) => {
   const response = await fetch(`${BASE_URL}/api/users/register`, {

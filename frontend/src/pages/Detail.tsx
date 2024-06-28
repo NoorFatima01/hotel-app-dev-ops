@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import * as apiClient from "../utils/api-clients";
@@ -53,7 +52,7 @@ const Detail = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 grid-cols-4 gap-2">
+      <div className="grid sm:grid-cols-1 grid-cols-4 gap-2">
         {hotelData.facilities.map((facility) => (
           <div className="border border-slate-300 rounded-sm p-3">
             {facility}
@@ -63,7 +62,7 @@ const Detail = () => {
 
       <div className="grid grid-cols-1 lg_grid-cols-[2fr_1fr]">
             <div className="whitespace-pre-line">
-                {/* {hotelData.description} */}
+                {hotelData.description}
 
             </div>
 

@@ -21,7 +21,8 @@ function App() {
           path="/"
           element={
             <Layout>
-              <h1>Home</h1>
+              <h1>Search for the hotels of your choice</h1>
+              <p>(Or Enter Paris, London, Tokyo, Hawaii, California or UK in the search bar)</p>
             </Layout>
           }
         />
@@ -93,7 +94,7 @@ function App() {
           />
         )}
 
-{isLogged && (
+        {isLogged && (
           <Route
             path="/hotel/:hotelId/booking"
             element={
@@ -106,7 +107,6 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <h1>All other</h1>
       {/* </Router> */}
     </BrowserRouter>
   );
