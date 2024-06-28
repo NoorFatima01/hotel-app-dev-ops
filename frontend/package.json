@@ -9,12 +9,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "workspaces": {
-    "nohoist": [
-      "**/tailwindcss",
-      "**/@tailwindcss/**"
-    ]
-  },
   "dependencies": {
     "@types/react-toastify": "^4.1.0",
     "cookie-parser": "^1.4.6",
