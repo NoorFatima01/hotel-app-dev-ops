@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import argon2 from "argon2";
 
 export type UserType = {
   _id: string;
@@ -16,13 +16,13 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
 });
 
-//function to be executed before saving the user to the database
-//this is actually a middleware
+// Function to be executed before saving the user to the database
+// This is actually a middleware
 userSchema.pre(
   "save",
   async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
     if (this.isModified("password")) {
-      this.password = await bcrypt.hash(this.password, 10);
+      this.password = await argon2.hash(this.password);
     }
     next();
   }
