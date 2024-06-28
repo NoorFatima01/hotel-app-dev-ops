@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { validationResult, check } from "express-validator";
 import User from "../models/user";
-import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import verifyToken from "../middleware/auth";
 
@@ -27,8 +26,9 @@ router.post(
       if (!user) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
-      const isMatch = await argon2.verify(user.password, password);
-      if (!isMatch) {
+      // const isMatch = await argon2.verify(user.password, password);
+      // Compare passwords without encryption
+      if (user.password !== password) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
       const token = jwt.sign(
