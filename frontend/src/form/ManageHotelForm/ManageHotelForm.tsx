@@ -40,13 +40,13 @@ const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) 
   },[hotelData,reset])
 
   const onSubmit = handleSubmit((data: HotelFormData) => {
-    //We are going to send the data to the server, but first we need to convert the data to FormData can not send it as a JSON object
-    console.log(data);
     const formData = new FormData();
-    if(hotelData){
-      console.log(hotelData._id, "hotelData._id")
+    
+    if (hotelData) {
       formData.append("_id", hotelData._id);
     }
+    
+    // Append basic hotel information
     formData.append("name", data.name);
     formData.append("city", data.city);
     formData.append("country", data.country);
@@ -56,22 +56,24 @@ const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) 
     formData.append("starRating", data.starRating.toString());
     formData.append("adultCapacity", data.adultCapacity.toString());
     formData.append("childCapacity", data.childCapacity.toString());
-    for (let i = 0; i < data.facilities.length; i++) {
-      formData.append("facilities", data.facilities[i]);
-    }
-
-    //if form is in edit mode, then save the existing image urls in the form data so that they can also be saved in the backend
-    if(data.imageUrls){
-      console.log(data.imageUrls[0])
-      for (let i = 0; i < data.imageUrls.length; i++) {
-        formData.append("imageUrls", data.imageUrls[i]);
-      }
-    }
-
-    Array.from(data.imageFiles).forEach((imageFile) => {
-      formData.append("imageFiles", imageFile);
+    
+    // Append facilities
+    data.facilities.forEach((facility) => {
+      formData.append("facilities", facility);
     });
-    console.log(...formData);
+  
+    // Handle existing image URLs
+    if (data.imageUrls && Array.isArray(data.imageUrls)) {
+      formData.append("imageUrls", JSON.stringify(data.imageUrls));
+    }
+  
+    // Append new image files
+    if (data.imageFiles) {
+      Array.from(data.imageFiles).forEach((imageFile) => {
+        formData.append("imageFiles", imageFile);
+      });
+    }
+  
     onSave(formData);
   });
 

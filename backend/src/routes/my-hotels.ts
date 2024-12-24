@@ -48,7 +48,7 @@ async function uploadToBucket(files: Express.Multer.File[]): Promise<string[]> {
 //this will be the root
 router.post(
   "/",
-  verifyToken, //only logged in users can create hotels
+  verifyToken,
   upload.array("imageFiles", 6),
   [
     body("name").notEmpty().withMessage("Name is required"),
@@ -73,37 +73,37 @@ router.post(
       .isNumeric()
       .withMessage("Star rating must be a number"),
     body("facilities")
-      .notEmpty()
-      .isArray()
-      .withMessage("Facilities must be an array"),
+      .custom((value) => {
+        // If it's a single value, convert it to an array
+        const facilitiesArray = Array.isArray(value) ? value : [value];
+        return facilitiesArray.length > 0;
+      })
+      .withMessage("At least one facility is required"),
   ],
   async (req: Request, res: Response) => {
-    console.log("req body");
-    console.log(req.body);
-    console.log("Headers:", req.headers);
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res
-        .status(400)
-        .json({ message: "Bad Request", errors: errors.array() });
+      return res.status(400).json({ message: "Bad Request", errors: errors.array() });
     }
+
     try {
       const files = req.files as Express.Multer.File[];
-      console.log(files);
-
       const imageUrls = await uploadToBucket(files);
-      console.log("imageUrls", imageUrls);
 
-      const newHotel: HotelType = req.body; //some of the fields will already be filled by the req body
-      newHotel.imageUrls = imageUrls;
-      newHotel.lastUpdated = new Date();
-      newHotel.userId = req.userId; //this is taken from the auth token
+      const newHotel: HotelType = {
+        ...req.body,
+        imageUrls,
+        lastUpdated: new Date(),
+        userId: req.userId,
+        // Ensure facilities is always an array
+        facilities: Array.isArray(req.body.facilities) 
+          ? req.body.facilities 
+          : [req.body.facilities]
+      };
 
-      //save the hotel to the database
       const hotel = new Hotel(newHotel);
       await hotel.save();
-      res.status(201).send(hotel); //201 is the status code for created
+      res.status(201).send(hotel);
     } catch (error) {
       console.log("error creating hotel", error);
       res.status(500).json({ message: "Internal server error" });
@@ -153,23 +153,32 @@ router.put(
       );
 
       if (!hotel) {
-        return res.status(400).json("Hotel not found");
+        res.status(400).json("Hotel not found");
+        return;
       }
 
       const files = req.files as Express.Multer.File[];
-      const updatedImageUrls = await uploadToBucket(files); // if the user uploaded new images, they will be uploaded to AWS, and their URLs will be stored here
+      const updatedImageUrls = await uploadToBucket(files);
 
-      hotel.imageUrls = [
-        ...updatedImageUrls,
-        ...(updatedHotel.imageUrls || []),
-      ]; // if the user deleted any image, then whatever images are left will be sent in the req
+      // Parse the existing imageUrls from the request body
+      let existingImageUrls: string[] = [];
+      if (req.body.imageUrls) {
+        try {
+          existingImageUrls = JSON.parse(req.body.imageUrls);
+        } catch (error) {
+          console.error("Error parsing imageUrls:", error);
+          existingImageUrls = [];
+        }
+      }
+
+      // Combine the new and existing image URLs
+      hotel.imageUrls = [...updatedImageUrls, ...existingImageUrls];
 
       await hotel.save();
-      console.log("hotel found", hotel);
-      return res.status(200).json(hotel);
+      res.status(200).json(hotel);
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 );
