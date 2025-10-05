@@ -41,7 +41,7 @@ app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelRoutes);
 
 // ✅ Serve frontend build
-const frontendPath = path.join(__dirname, "../frontend/dist");
+const frontendPath = path.join(__dirname, "../../frontend/dist");
 app.use(express.static(frontendPath));
 
 app.get("*", (req: Request, res: Response) => {
