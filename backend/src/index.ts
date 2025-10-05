@@ -22,28 +22,31 @@ export const client = new S3Client({
 });
 
 const app = express();
-app.use(cookieParser()); //to parse the cookie
+
+app.use(cookieParser());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL, // set this to EC2 public IP or domain
     credentials: true,
   })
 );
 
-app.use(express.static(path.join(__dirname,"../../frontend/dist"))); //serve the static files from the dist folder of the frontend
-
-app.use(express.json()); //converts the body of the request to json automatically
-app.use(express.urlencoded({ extended: true })); //helps parse the url to get the query parameters
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", myHotelRoutes);
-app.use("/api/hotels",hotelRoutes)
+app.use("/api/hotels", hotelRoutes);
 
-app.get("*", (req:Request, res:Response) => {
-  res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"));
-}); 
+// ✅ Serve frontend build
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
+
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 app.listen(7000, () => {
   console.log("Server started at port 7000");
