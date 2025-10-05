@@ -27,25 +27,29 @@ type ManageHotelFormProps = {
   hotelData?: HotelType;
 };
 
-const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) => {
+const ManageHotelForm = ({
+  onSave,
+  isLoading,
+  hotelData,
+}: ManageHotelFormProps) => {
   const formMethods = useForm<HotelFormData>();
   //we are not gonna destruct the formMethods object here
 
-  const { handleSubmit,reset } = formMethods;
+  const { handleSubmit, reset } = formMethods;
 
-  useEffect (()=>{
-    if(hotelData){
-      reset(hotelData)
+  useEffect(() => {
+    if (hotelData) {
+      reset(hotelData);
     }
-  },[hotelData,reset])
+  }, [hotelData, reset]);
 
   const onSubmit = handleSubmit((data: HotelFormData) => {
     const formData = new FormData();
-    
+
     if (hotelData) {
       formData.append("_id", hotelData._id);
     }
-    
+
     // Append basic hotel information
     formData.append("name", data.name);
     formData.append("city", data.city);
@@ -56,24 +60,24 @@ const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) 
     formData.append("starRating", data.starRating.toString());
     formData.append("adultCapacity", data.adultCapacity.toString());
     formData.append("childCapacity", data.childCapacity.toString());
-    
+
     // Append facilities
     data.facilities.forEach((facility) => {
       formData.append("facilities", facility);
     });
-  
+
     // Handle existing image URLs
     if (data.imageUrls && Array.isArray(data.imageUrls)) {
       formData.append("imageUrls", JSON.stringify(data.imageUrls));
     }
-  
+
     // Append new image files
     if (data.imageFiles) {
       Array.from(data.imageFiles).forEach((imageFile) => {
         formData.append("imageFiles", imageFile);
       });
     }
-  
+
     onSave(formData);
   });
 
@@ -89,7 +93,7 @@ const ManageHotelForm = ({ onSave, isLoading,hotelData }: ManageHotelFormProps) 
           <button
             disabled={isLoading}
             type="submit"
-            className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl disabled:bg-gray-500"
+            className="bg-[#2c1eaf] text-white p-2 font-bold hover:bg-[#1e1eaf] text-xl disabled:bg-gray-500"
           >
             {isLoading ? "Saving..." : "Save"}
           </button>

@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from "../utils/api-clients";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export type RegisterFormData = {
   firstName: string;
@@ -12,8 +12,6 @@ export type RegisterFormData = {
   password: string;
   confirmPassword: string;
 };
-
-
 
 const Register = () => {
   const {
@@ -27,24 +25,26 @@ const Register = () => {
 
   const navigate = useNavigate();
 
+  const successToast = () =>
+    toast.success("Account created successfully", { position: "top-right" });
+  const errorToast = () =>
+    toast.error("Error creating account", { position: "top-right" });
 
-const successToast = () => toast.success('Account created successfully', { position: 'top-right' });
-    const errorToast = () => toast.error('Error creating account',{position: 'top-right'});
-
-  const mutation = useMutation(apiClient.register,{
-    onSuccess: async ()=>{
-      await queryClient.invalidateQueries('validateToken');
-        successToast();
-        navigate('/');
+  const mutation = useMutation(apiClient.register, {
+    onSuccess: async () => {
+      await queryClient.invalidateQueries("validateToken");
+      successToast();
+      navigate("/");
     },
-    onError:(error)=>{ //this is where we are catching the error if thrown from the api
-        errorToast();
-        console.log(error)
-    }
+    onError: (error) => {
+      //this is where we are catching the error if thrown from the api
+      errorToast();
+      console.log(error);
+    },
   });
 
   const onSubmit = handleSubmit((data) => {
-    console.log(data)
+    console.log(data);
     return mutation.mutate(data);
   });
   return (
@@ -58,14 +58,24 @@ const successToast = () => toast.success('Account created successfully', { posit
             className="border rounded w-full py-1 px-2 font-normal"
             {...register("firstName", { required: "This field is requried" })}
           />
-          {errors.firstName && (<span className="text-red-500 text-sm">{errors.firstName.message}</span>)}
+          {errors.firstName && (
+            <span className="text-red-500 text-sm">
+              {errors.firstName.message}
+            </span>
+          )}
         </label>
 
         <label className="text-gray-700 text-sm font-bold flex-1">
           Last Name
-          <input className="border rounded w-full py-1 px-2 font-normal"
-          {...register("lastName", { required: "This field is requried" })} />
-          {errors.lastName && (<span className="text-red-500 text-sm">{errors.lastName.message}</span>)}
+          <input
+            className="border rounded w-full py-1 px-2 font-normal"
+            {...register("lastName", { required: "This field is requried" })}
+          />
+          {errors.lastName && (
+            <span className="text-red-500 text-sm">
+              {errors.lastName.message}
+            </span>
+          )}
         </label>
       </div>
 
@@ -76,7 +86,9 @@ const successToast = () => toast.success('Account created successfully', { posit
           className="border rounded w-full py-1 px-2 font-normal"
           {...register("email", { required: "This field is requried" })}
         />
-        {errors.email && (<span className="text-red-500 text-sm">{errors.email.message}</span>)}
+        {errors.email && (
+          <span className="text-red-500 text-sm">{errors.email.message}</span>
+        )}
       </label>
 
       <label className="text-gray-700 text-sm font-bold">
@@ -92,7 +104,11 @@ const successToast = () => toast.success('Account created successfully', { posit
             },
           })}
         />
-        {errors.password && (<span className="text-red-500 text-sm">{errors.password.message}</span>)}
+        {errors.password && (
+          <span className="text-red-500 text-sm">
+            {errors.password.message}
+          </span>
+        )}
       </label>
 
       <label className="text-gray-700 text-sm font-bold">
@@ -110,12 +126,16 @@ const successToast = () => toast.success('Account created successfully', { posit
             },
           })}
         />
-        {errors.confirmPassword && (<span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>)}
+        {errors.confirmPassword && (
+          <span className="text-red-500 text-sm">
+            {errors.confirmPassword.message}
+          </span>
+        )}
       </label>
 
       <button
         type="submit"
-        className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500"
+        className="bg-[#2c1eaf] text-white p-2 font-bold hover:bg-[#1e1eaf]"
       >
         Create Account
       </button>

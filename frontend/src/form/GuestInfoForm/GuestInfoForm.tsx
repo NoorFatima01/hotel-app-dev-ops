@@ -32,7 +32,7 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: GuestInfoFormProps) => {
     },
   });
   const navigate = useNavigate();
-  const {isLogged} = useAppContext();
+  const { isLogged } = useAppContext();
   const location = useLocation();
 
   const checkIn = watch("checkIn");
@@ -42,20 +42,37 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: GuestInfoFormProps) => {
   const maxDate = new Date();
   maxDate.setFullYear(maxDate.getFullYear() + 1);
 
-  const onSignInClick = (data:GuestInfoFormValues) => {
-    search.saveSearchValues("",data.checkIn,data.checkOut,data.adultapacity,data.childrenCapacity)
-    navigate("/sign-in",{state:{from:location}})
-  }
+  const onSignInClick = (data: GuestInfoFormValues) => {
+    search.saveSearchValues(
+      "",
+      data.checkIn,
+      data.checkOut,
+      data.adultapacity,
+      data.childrenCapacity
+    );
+    navigate("/sign-in", { state: { from: location } });
+  };
 
-    const onSubmit = (data: GuestInfoFormValues) => {
-        search.saveSearchValues("",data.checkIn,data.checkOut,data.adultapacity,data.childrenCapacity,hotelId)
-        navigate(`/hotel/${hotelId}/booking`,{state:{from:location}})
-    };
+  const onSubmit = (data: GuestInfoFormValues) => {
+    search.saveSearchValues(
+      "",
+      data.checkIn,
+      data.checkOut,
+      data.adultapacity,
+      data.childrenCapacity,
+      hotelId
+    );
+    navigate(`/hotel/${hotelId}/booking`, { state: { from: location } });
+  };
 
   return (
     <div className="flex flex-col p-4 bg-blue-200 gap-4">
       <h3 className="text-md font-bold">{pricePerNight}</h3>
-      <form onSubmit={isLogged ? handleSubmit(onSubmit) : handleSubmit(onSignInClick)}>
+      <form
+        onSubmit={
+          isLogged ? handleSubmit(onSubmit) : handleSubmit(onSignInClick)
+        }
+      >
         <div className="grid grid-cols-1 gap-4 items-center">
           <div>
             <DatePicker
@@ -123,11 +140,13 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: GuestInfoFormProps) => {
           </div>
 
           {isLogged ? (
-            <button className="bg-blue-600 text-white h-full p-2 font-bold hover:bg-blue-500 text-xl">
+            <button className="bg-[#2c1eaf] text-white h-full p-2 font-bold hover:bg-[#1e1eaf] text-xl">
               Book Now
             </button>
           ) : (
-            <button className="bg-blue-600 text-white h-full p-2 font-bold hover:bg-blue-500 text-xl">Login to Book</button>
+            <button className="bg-[#2c1eaf] text-white h-full p-2 font-bold hover:bg-[#1e1eaf] text-xl">
+              Login to Book
+            </button>
           )}
         </div>
       </form>

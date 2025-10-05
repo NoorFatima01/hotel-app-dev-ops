@@ -23,7 +23,8 @@ const SignIn = () => {
 
   const successToast = () =>
     toast.success("Sign in successfull", { position: "top-right" });
-  const errorToast = () => toast.error("Error with sign in", { position: "top-right" });
+  const errorToast = () =>
+    toast.error("Error with sign in", { position: "top-right" });
 
   const mutation = useMutation(apiClient.signIn, {
     onSuccess: async () => {
@@ -77,21 +78,20 @@ const SignIn = () => {
         )}
       </label>
       <span className="flex items-center justify-between">
-      <button
-        type="submit"
-        className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500"
-      >
-        Log In
-      </button>
+        <button
+          type="submit"
+          className="bg-[#2c1eaf] text-white p-2 font-bold hover:bg-[#1e1eaf]"
+        >
+          Log In
+        </button>
 
-      <p>
-        Don't have an account?{" "}
-        <Link to="/register" className="text-blue-600 font-bold">
-          Register
-        </Link>
-      </p>
+        <p>
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-600 font-bold">
+            Register
+          </Link>
+        </p>
       </span>
-      
     </form>
   );
 };
