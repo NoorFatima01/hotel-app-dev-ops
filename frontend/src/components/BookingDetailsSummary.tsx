@@ -1,4 +1,4 @@
-import { HotelType } from "../../../backend/src/models/hotel";
+import { HotelType } from "../utils/types";
 
 type BookingDetailsSummaryProps = {
   checkIn: Date;

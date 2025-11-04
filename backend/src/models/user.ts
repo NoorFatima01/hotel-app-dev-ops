@@ -19,15 +19,15 @@ const userSchema = new mongoose.Schema({
 
 // Function to be executed before saving the user to the database
 // This is actually a middleware
-// userSchema.pre(
-//   "save",
-//   async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
-//     if (this.isModified("password")) {
-//       this.password = await argon2.hash(this.password);
-//     }
-//     next();
-//   }
-// );
+userSchema.pre(
+  "save",
+  async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+    if (this.isModified("password")) {
+      this.password = await argon2.hash(this.password);
+    }
+    next();
+  }
+);
 
 const User = mongoose.model<UserType>("User", userSchema);
 

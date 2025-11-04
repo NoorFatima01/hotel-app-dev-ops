@@ -4,7 +4,7 @@ import TypeSection from "./TypeSection";
 import FacilitiesSection from "./FacilitiesSection";
 import GuestsSection from "./GuestsSection";
 import ImageSection from "./ImageSection";
-import { HotelType } from "../../../../backend/src/models/hotel";
+import { HotelType } from "../../utils/types";
 import { useEffect } from "react";
 export type HotelFormData = {
   name: string;

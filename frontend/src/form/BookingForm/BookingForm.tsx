@@ -1,4 +1,4 @@
-import { UserType } from "../../../../backend/src/models/user";
+import { UserType } from "../../utils/types";
 import { useForm } from "react-hook-form";
 
 type BookingFormProps = {

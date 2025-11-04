@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import * as apiClient from "../utils/api-clients";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import { HotelType } from "../../../backend/src/models/hotel";
+import { HotelType } from "../utils/types";
 import { BsBuilding, BsMap } from "react-icons/bs";
 import { BiHotel, BiMoney, BiStar } from "react-icons/bi";
 

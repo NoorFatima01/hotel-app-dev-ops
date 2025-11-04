@@ -41,15 +41,21 @@ app.use("/api/my-hotels", myHotelRoutes);
 app.use("/api/hotels", hotelRoutes);
 
 // ✅ Serve frontend build
-const frontendPath = path.join(__dirname, "../../frontend/dist");
+// Decide path based on env
+const frontendPath =
+  process.env.DEPLOY_ENV === "ec2"
+    ? path.join(__dirname, "public")   // Docker: /app/dist/public
+    : path.join(__dirname, "../../frontend/dist"); // Local dev
 app.use(express.static(frontendPath));
 
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-app.listen(7000, () => {
-  console.log("Server started at port 7000");
+const PORT = process.env.PORT || 7000;
+
+app.listen(PORT, () => {
+  console.log(`Server started at port ${PORT}`);
 });
 
 //

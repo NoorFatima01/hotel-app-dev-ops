@@ -1,8 +1,8 @@
 import { RegisterFormData } from "../pages/Register";
 import { SignInFormData } from "../pages/SignIn";
-import { HotelType } from "../../../backend/src/models/hotel";
-import { HotelSearchResponse } from "../../../backend/src/models/search";
-import { UserType } from "../../../backend/src/models/user";
+import { HotelType } from "../utils/types";
+import { HotelSearchResponse } from "../utils/types";
+import { UserType } from "../utils/types";
 const BASE_URL = process.env.REACT_APP_BACKEND_URL as string || "";
 
 export const register = async (formData: RegisterFormData) => {

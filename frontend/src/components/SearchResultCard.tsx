@@ -1,4 +1,4 @@
-import { HotelType } from "../../../backend/src/models/hotel";
+import { HotelType } from "../utils/types";
 import { BiStar } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
