@@ -4,6 +4,6 @@ services:
     build: .
     container_name: mern-app
     ports:
-      - "7000:7000"
+      - "8000:7000"
     env_file:
       - ./backend/.env
