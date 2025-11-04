@@ -1,9 +1,16 @@
 version: "3.9"
+
 services:
-  app:
-    build: .
-    container_name: mern-app-jenkins
+  mern-build-app:
+    image: node:20 
+    container_name: mern-build-app
+    working_dir: /app
+    volumes:
+      - .:/app              # Mount the GitHub code into the container
+      - /app/node_modules  
     ports:
-      - "8000:7000"
-    env_file:
-      - ./backend/.env
+      - "8000:7000"       
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=${MONGO_URI}
+    command: bash -c "cd backend && npm install && cd ../frontend && npm install && npm run build"
