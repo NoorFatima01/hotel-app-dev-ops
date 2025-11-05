@@ -11,6 +11,7 @@ type LayoutProps = {
 const Layout = ({ children }:LayoutProps) => {
     console.log("Testing jenkins build")
     console.log("Another test for jenkins build")
+    console.log("Third test for jenkins build")
     return(
         <div className="flex flex-col min-h-screen">
             <Header/>
