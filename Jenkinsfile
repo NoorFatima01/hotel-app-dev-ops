@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     environment {
-        CONTAINER_NAME = "mern-build-app"        // Matches your docker-compose.yml
+        CONTAINER_NAME = "mern-build-app"   
         COMPOSE_FILE = "docker-compose.yml"
-        ENV_FILE_PATH = "/home/ubuntu/.env"      // Path to .env on EC2
+        ENV_FILE_PATH = "/var/lib/jenkins/secrets/.env"      // Path to .env on EC2
     }
 
     stages {
