@@ -1,70 +1,88 @@
 pipeline {
     agent any
-
+    
     environment {
-        CONTAINER_NAME = "mern-build-app"   
-        COMPOSE_FILE = "docker-compose.yml"
-        ENV_FILE_PATH = "/var/lib/jenkins/secrets/.env"      // Path to .env on EC2
+        // Load credentials from Jenkins
+        JWT_SECRET = credentials('JWT_SECRET')
+        MONGODB_URI = credentials('MONGODB_URI')
+        S3_ACCESS_KEY = credentials('S3_ACCESS_KEY')
+        S3_BUCKET_NAME = credentials('S3_BUCKET_NAME')
+        S3_REGION = credentials('S3_REGION')
+        S3_SECRET_KEY = credentials('S3_SECRET_KEY')
+        DEPLOY_ENV = credentials('DEPLOY_ENV')
+        STRIPE_API_KEY = credentials('STRIPE_API_KEY')
     }
-
+    
     stages {
         stage('Checkout Code') {
             steps {
-                // Fetch latest code from GitHub
-                git branch: 'main', url: 'https://github.com/NoorFatima01/hotel-app-dev-ops.git'
+                echo 'Fetching code from GitHub...'
+                git branch: 'main', 
+                    url: 'https://github.com/NoorFatima01/hotel-app-dev-ops.git'
             }
         }
-
-        stage('Prepare Environment') {
+        
+        stage('Stop Existing Containers') {
             steps {
-                // Copy .env into project directory so docker-compose can access it
-                sh """
-                cp $ENV_FILE_PATH .env
-                """
+                echo 'Stopping any existing containers...'
+                script {
+                    sh 'docker-compose down || true'
+                }
             }
         }
-
-        stage('Stop Previous Build Container') {
+        
+        stage('Build and Deploy') {
             steps {
-                // Stop and remove old build container if it exists
-                sh """
-                if [ \$(docker ps -aq -f name=$CONTAINER_NAME) ]; then
-                    echo "Stopping existing container..."
-                    docker rm -f $CONTAINER_NAME || true
-                fi
-                """
+                echo 'Building and deploying application...'
+                script {
+                    sh '''
+                        export JWT_SECRET="${JWT_SECRET}"
+                        export MONGODB_URI="${MONGODB_URI}"
+                        export S3_ACCESS_KEY="${S3_ACCESS_KEY}"
+                        export S3_BUCKET_NAME="${S3_BUCKET_NAME}"
+                        export S3_REGION="${S3_REGION}"
+                        export S3_SECRET_KEY="${S3_SECRET_KEY}"
+                        export DEPLOY_ENV="${DEPLOY_ENV}"
+                        export STRIPE_API_KEY="${STRIPE_API_KEY}"
+                        docker-compose up -d --build
+                    '''
+                }
             }
         }
-
-        stage('Build Application with Docker Compose') {
+        
+        stage('Verify Deployment') {
             steps {
-                // Use docker-compose (no Dockerfile build this time)
-                sh """
-                docker-compose -f $COMPOSE_FILE up --build -d
-                """
+                echo 'Verifying containers are running...'
+                script {
+                    sh 'docker-compose ps'
+                    sh 'docker ps'
+                }
             }
         }
-
-        stage('Verify Build') {
+        
+        stage('Check Application Health') {
             steps {
-                // Verify that container is running
-                sh """
-                docker ps --filter "name=$CONTAINER_NAME"
-                """
+                echo 'Waiting for application to start...'
+                script {
+                    sh 'sleep 10'
+                    sh 'curl -f http://localhost:8000 || echo "App still starting..."'
+                }
             }
         }
     }
-
+    
     post {
         success {
-            echo "Jenkins Build Pipeline completed successfully!"
+            echo 'Pipeline completed successfully!'
+            echo 'Application is running on port 8000'
+            echo 'Access at: http://<jenkins-ip>:8000'
         }
         failure {
-            echo "Jenkins Build Pipeline failed. Check logs for details."
+            echo 'Pipeline failed. Check logs for details.'
+            sh 'docker-compose logs || true'
         }
         always {
-            sh "docker system prune -f"
-            echo "Cleaned up unused Docker resources."
+            echo 'Pipeline execution finished.'
         }
     }
 }
