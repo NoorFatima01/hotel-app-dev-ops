@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        // Load credentials from Jenkins
         JWT_SECRET = credentials('JWT_SECRET')
         MONGODB_URI = credentials('MONGODB_URI')
         S3_ACCESS_KEY = credentials('S3_ACCESS_KEY')
@@ -14,6 +13,16 @@ pipeline {
     }
     
     stages {
+        stage('Cleanup Before Build') {
+            steps {
+                echo 'Aggressive cleanup...'
+                sh '''
+                    docker system prune -af --volumes
+                    docker builder prune -af
+                '''
+            }
+        }
+        
         stage('Checkout Code') {
             steps {
                 echo 'Fetching code from GitHub...'
@@ -25,64 +34,52 @@ pipeline {
         stage('Stop Existing Containers') {
             steps {
                 echo 'Stopping any existing containers...'
-                script {
-                    sh 'docker-compose down || true'
-                }
+                sh 'docker-compose down || true'
             }
         }
         
         stage('Build and Deploy') {
             steps {
                 echo 'Building and deploying application...'
-                script {
-                    sh '''
-                        export JWT_SECRET="${JWT_SECRET}"
-                        export MONGODB_URI="${MONGODB_URI}"
-                        export S3_ACCESS_KEY="${S3_ACCESS_KEY}"
-                        export S3_BUCKET_NAME="${S3_BUCKET_NAME}"
-                        export S3_REGION="${S3_REGION}"
-                        export S3_SECRET_KEY="${S3_SECRET_KEY}"
-                        export DEPLOY_ENV="${DEPLOY_ENV}"
-                        export STRIPE_API_KEY="${STRIPE_API_KEY}"
-                        docker-compose up -d --build
-                    '''
-                }
+                sh '''
+                    export JWT_SECRET="${JWT_SECRET}"
+                    export MONGODB_URI="${MONGODB_URI}"
+                    export S3_ACCESS_KEY="${S3_ACCESS_KEY}"
+                    export S3_BUCKET_NAME="${S3_BUCKET_NAME}"
+                    export S3_REGION="${S3_REGION}"
+                    export S3_SECRET_KEY="${S3_SECRET_KEY}"
+                    export DEPLOY_ENV="${DEPLOY_ENV}"
+                    docker-compose up -d --build
+                '''
             }
         }
         
         stage('Verify Deployment') {
             steps {
-                echo 'Verifying containers are running...'
-                script {
-                    sh 'docker-compose ps'
-                    sh 'docker ps'
-                }
+                echo 'Verifying containers...'
+                sh 'docker-compose ps'
+                sh 'docker ps'
             }
         }
         
         stage('Check Application Health') {
             steps {
                 echo 'Waiting for application to start...'
-                script {
-                    sh 'sleep 10'
-                    sh 'curl -f http://localhost:8000 || echo "App still starting..."'
-                }
+                sh 'sleep 15'
+                sh 'curl -f http://localhost:8000 || echo "App still starting..."'
             }
         }
     }
     
     post {
         success {
-            echo 'Pipeline completed successfully!'
-            echo 'Application is running on port 8000'
-            echo 'Access at: http://<jenkins-ip>:8000'
+            echo 'Deployment successful!'
+            // Clean up old images but keep current
+            sh 'docker image prune -f || true'
         }
         failure {
-            echo 'Pipeline failed. Check logs for details.'
+            echo 'Deployment failed!'
             sh 'docker-compose logs || true'
-        }
-        always {
-            echo 'Pipeline execution finished.'
         }
     }
 }

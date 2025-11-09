@@ -2,14 +2,14 @@ version: "3.9"
 
 services:
   mern-app:
-    image: node:20 
-    container_name: mern-app-partII
+    image: node:20-alpine
+    container_name: mern-app-jenkins
     working_dir: /app
     volumes:
       - .:/app              
-      - /app/node_modules
-      - /app/frontend/node_modules
-      - /app/backend/node_modules  
+      - node_modules_cache:/app/node_modules
+      - frontend_node_modules:/app/frontend/node_modules
+      - backend_node_modules:/app/backend/node_modules
     ports:
       - "8000:7000"       
     environment:
@@ -22,4 +22,19 @@ services:
       - S3_SECRET_KEY=${S3_SECRET_KEY}
       - DEPLOY_ENV=ec2
       - PORT=7000
-    command: bash -c "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r dist/* ../backend/public/ && cd ../backend && npm install && npm run build && node dist/server.js"
+    command: sh -c "
+      cd frontend && 
+      npm ci --production=false && 
+      npm run build && 
+      mkdir -p ../backend/public && 
+      cp -r dist/* ../backend/public/ && 
+      cd ../backend && 
+      npm ci --production=false && 
+      npm run build && 
+      node dist/server.js
+      "
+
+volumes:
+  node_modules_cache:
+  frontend_node_modules:
+  backend_node_modules:
