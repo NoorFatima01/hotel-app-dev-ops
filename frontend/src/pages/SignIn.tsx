@@ -71,11 +71,10 @@ const SignIn = () => {
             },
           })}
         />
-        {errors.password && (
           <span className="text-red-500 text-sm">
-            {errors.password.message}
+            {errors.password?.message}
           </span>
-        )}
+        
       </label>
       <span className="flex items-center justify-between">
         <button

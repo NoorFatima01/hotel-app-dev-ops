@@ -35,6 +35,7 @@ const SearchBar = () => {
       <div className="flex flex-row items-center flex-1 bg-white p-2">
         <MdTravelExplore size={25} className="mr-2" />
         <input
+        name="destination"
           type="text"
           placeholder="Destination"
           value={destination}
@@ -47,6 +48,7 @@ const SearchBar = () => {
         <label className="items-center flex">
           Adults:
           <input
+          name="adults"
             className="w-full p-1 focus:outline-none font-bold"
             type="number"
             min={1}
@@ -60,6 +62,7 @@ const SearchBar = () => {
         <label className="items-center flex">
           Children:
           <input
+          name="children"
             className="w-full p-1 focus:outline-none font-bold"
             type="number"
             min={0}
@@ -74,6 +77,7 @@ const SearchBar = () => {
 
       <div>
         <DatePicker
+        name="checkIn"
           selected={checkIn}
           onChange={(date) => setCheckIn(date as Date)}
           selectsStart
@@ -88,6 +92,7 @@ const SearchBar = () => {
 
       <div>
         <DatePicker
+        name="checkOut"
           selected={checkOut}
           onChange={(date) => setCheckOut(date as Date)}
           selectsStart
